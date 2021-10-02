@@ -3,6 +3,9 @@
 #' Main forecasting function
 #'
 #' This is the main forecasting function for a fitted WWmodel.
+#' @details
+#' This function is used to make forecasts using a fitted WWmodel.
+#' See ?FORECASTplot for how to plot the forecasts.
 #' @param h.ahead The number of steps ahead for which prediction is required
 #' @param modeldata The long-format data frame/table of virus concentration
 #' @param model_res The model result from WWmodel()

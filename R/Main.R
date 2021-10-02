@@ -77,6 +77,9 @@ createStanModel = function(L0, P, Lp = NULL) {
 #' Main WWmodel function
 #'
 #' This is the main function for fitting WWmodel.
+#' @details
+#' This is the main function used to fit a WWmodel.
+#' See ?WWforecast and ?FORECASTplot for how to make forecasts using a fitted WWmodel.
 #' @param modeldata The long-format data frame/table of virus concentration
 #' @param ID Names of curve IDs (used to identify a unique curve)
 #' @param date Name of date column
