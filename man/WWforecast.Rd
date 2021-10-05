@@ -41,6 +41,10 @@ Ypred The forecast of observed virus concentration
 \description{
 This is the main forecasting function for a fitted WWmodel.
 }
+\details{
+This function is used to make forecasts using a fitted WWmodel.
+See ?FORECASTplot for how to plot the forecasts.
+}
 \examples{
 rawdata = as.data.table(readRDS("ww-db-2021-09-10.rds"))
 modeldata = DataPrep(rawdata, "N1")

@@ -4,7 +4,14 @@
 \alias{FORECASTplot}
 \title{Create a plot of the sampled curves and forecasts}
 \usage{
-FORECASTplot(modeldata, model_res, forecast_res, ncol, targetdata = NULL)
+FORECASTplot(
+  modeldata,
+  model_res,
+  forecast_res,
+  ncol,
+  targetdata = NULL,
+  legend = TRUE
+)
 }
 \arguments{
 \item{modeldata}{The long-format data frame/table of virus concentration}
@@ -14,6 +21,8 @@ FORECASTplot(modeldata, model_res, forecast_res, ncol, targetdata = NULL)
 \item{ncol}{The number of columns in the plot}
 
 \item{targetdata}{The ``future'' observations to be forecasted (the default is NULL)}
+
+\item{legend}{If a lengend should be included (the default is TRUE)}
 }
 \value{
 The plot of simultaneous confidence bands.
@@ -24,8 +33,8 @@ This function is used to create a plot of simultaneous confidence bands.
 \examples{
 rawdata = as.data.table(readRDS("ww-db-2021-09-10.rds"))
 modeldata = DataPrep(rawdata, "N1")
-targetdata = modeldata[date < as.Date("2021-06-30") & date > as.Date("2021-06-01")]
-modeldata = modeldata[date <= as.Date("2021-06-01")]
+targetdata = modeldata[date < as.Date("2021-06-15") & date > as.Date("2021-05-15")]
+modeldata = modeldata[date <= as.Date("2021-05-15")]
 
 ID = c("Location", "target", "replicate")
 date = "date"
