@@ -49,7 +49,7 @@ WWforecast = function(h.ahead, modeldata, model_res, ID, date, value, covariate 
       names(Xp) = gsub(".*[.]", "", names(Xp))
       Xp = Xp[, names(Xp) %in% names(Ymat), with = FALSE]
       Xp.fit = fpca.sc(as.matrix(Xp), pve = 0.99, var = TRUE, simul = TRUE)
-      Xp.fit$Yhat[2 * (1:15), ] = Xp.fit$Yhat[2 * (1:15) - 1, ]
+      Xp.fit$Yhat[2 * (1:I), ] = Xp.fit$Yhat[2 * (1:I) - 1, ]
       Xp.fit$Yhat = Xp.fit$Yhat / max(Xp.fit$Yhat)
       XPHI[[p]] = t(Xp.fit$efunctions)
       Xp = as.data.table(Xp.fit$Yhat)
@@ -58,7 +58,7 @@ WWforecast = function(h.ahead, modeldata, model_res, ID, date, value, covariate 
   }
   Ymat_mu = sweep(as.matrix(Ymat), 2, apply(Ymat, 2, function(x) mean(x, na.rm = TRUE)))
   fpca.fit = fpca.sc(as.matrix(Ymat), pve = 0.99, var = TRUE, simul = TRUE)
-  fpca.fit$scores[2 * (1:15), ] = fpca.fit$scores[2 * (1:15) - 1, ]
+  fpca.fit$scores[2 * (1:I), ] = fpca.fit$scores[2 * (1:I) - 1, ]
   PHI = t(fpca.fit$efunctions)
   L0 = dim(PHI)[1]
   Lambda = sqrt(fpca.fit$evalues)
