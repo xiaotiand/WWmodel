@@ -1,5 +1,73 @@
 ##### Plot/diagnostic Functions
 
+
+plot_fitted_trend <- function(modeldata, model_res) {
+
+  # --- reshape input data
+  Ymat = reshape(modeldata[, names(modeldata) %in% c(ID, date, value), with = FALSE],
+                 idvar = ID, timevar = date, direction = "wide")
+  Ymat = Ymat[order(Location, replicate)]
+  IDdt = Ymat[, names(Ymat) %in% ID, with = FALSE]
+  Ymat = Ymat[, !ID, with = FALSE]
+  names(Ymat) = gsub(".*[.]", "", names(Ymat))
+
+  dat = data.frame(t(Ymat))
+  names(dat) <- IDdt$Location  # <<== NOT SURE ABOUT THIS!!!!
+
+  thedates = ymd(names(Ymat))
+  dat$date = thedates
+  nloc = dim(Ymat)[1] / 2
+  loc = IDdt$Location[2 * (1:nloc)]
+
+  # --- Fitted data
+
+  Yhat = model_res$Yhat
+
+  # --- Merging observation anf fitted trends
+
+  datlong = dat %>%
+    pivot_longer(-date, names_to = 'Location', values_to = 'value.obs')
+
+  extract_fit_ss <- function(i, Yhat) {
+    a = data.frame(t(Yhat[[i]]))
+    a$date <- thedates
+
+    a.long = a %>%
+      pivot_longer(-date)
+
+    ci = 0.95
+    a.ss = a.long %>%
+      group_by(date) %>%
+      summarise(m = mean(value),
+                qlo = quantile(value, probs = 0.5 - ci/2),
+                qhi = quantile(value, probs = 0.5 + ci/2)) %>%
+      mutate(Location = loc[i])
+    return(a.ss)
+  }
+
+  tmp = lapply(1:nloc, extract_fit_ss, Yhat)
+  df = do.call('rbind', tmp)
+
+  dj = left_join(df, datlong, by = c('Location', 'date'))
+
+  col.fit = 'green4'
+  g = dj %>%
+    ggplot(aes(x=date)) +
+    geom_ribbon(aes(ymin=qlo, ymax=qhi), alpha = 0.23,
+                fill = col.fit, color = col.fit, size=0.2)+
+    geom_line(aes(y=m), size = 1,  color  = col.fit) +
+    geom_point(aes(y = value.obs), alpha = 0.5, shape = 16) +
+    facet_wrap(~Location, scales = 'free_y', ncol = 1) +
+    theme(panel.grid.minor = element_blank())+
+    labs(
+      title = 'Fitted trends',
+      x='', y='log concentration'
+    )
+  g
+
+}
+
+
 #' Create a plot of the sampled curves
 #'
 #' This function is used to create a plot of simultaneous confidence bands.
@@ -23,7 +91,6 @@ SAMPLEplot = function(modeldata, model_res, ncol) {
   par(mfrow = c(nrow, ncol))
   Yhat = model_res$Yhat
   ylim = max(unlist(lapply(Yhat, max)))
-  par(mfrow = c(4, 4))
   for (i in 1:I) {
     plot(Yhat[[i]][1, ], type = "l", col = "#00000010", xlab = paste(IDdt[2 * i, 1]),
          ylab = "Y", ylim = c(0, ylim))
