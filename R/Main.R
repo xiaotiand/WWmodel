@@ -121,6 +121,7 @@ WWmodel = function(modeldata, ID, date, value, covariate = NULL, iteration, burn
       names(Xp) = gsub(".*[.]", "", names(Xp))
       Xp = Xp[, names(Xp) %in% names(Ymat), with = FALSE]
       Xp.fit = fpca.sc(as.matrix(Xp), pve = 0.99, var = TRUE, simul = TRUE)
+      if (Xp.fit$npc > 5) Xp.fit = fpca.sc(as.matrix(Xp), npc = 5, var = TRUE, simul = TRUE)
       Xp.fit$Yhat[2 * (1:I), ] = Xp.fit$Yhat[2 * (1:I) - 1, ]
       Xp.fit$Yhat = Xp.fit$Yhat / max(Xp.fit$Yhat)
       XPHI[[p]] = t(Xp.fit$efunctions)
@@ -131,6 +132,7 @@ WWmodel = function(modeldata, ID, date, value, covariate = NULL, iteration, burn
 
   Ymat_mu = sweep(as.matrix(Ymat), 2, apply(Ymat, 2, function(x) mean(x, na.rm = TRUE)))
   fpca.fit = fpca.sc(as.matrix(Ymat), pve = 0.99, var = TRUE, simul = TRUE)
+  if (fpca.fit$npc > 8) fpca.fit = fpca.sc(as.matrix(Ymat), npc = 8, var = TRUE, simul = TRUE)
   fpca.fit$scores[2 * (1:I), ] = fpca.fit$scores[2 * (1:I) - 1, ]
   PHI = t(fpca.fit$efunctions)
   L0 = dim(PHI)[1]
@@ -148,9 +150,10 @@ WWmodel = function(modeldata, ID, date, value, covariate = NULL, iteration, burn
     for (p in 1:P) {
       Xmat[[p]] = matrix(rep(as.numeric(t(X[[p]])), dim(XPHI[[p]])[1]), ncol = dim(XPHI[[p]])[1])
       Xmat[[p]] = t(do.call("cbind", rep(list(XPHI[[p]]), I * 2))) * Xmat[[p]]
-      Xmat[[p]] = Xmat[[p]][-missing, ]
-      Xmat[[p]] = Xmat[[p]] / max(Xmat[[p]])
       Lp[p] = dim(Xmat[[p]])[2]
+      Xmat[[p]] = Xmat[[p]][-missing, ]
+      if (Lp[p] == 1) Xmat[[p]] = matrix(Xmat[[p]], ncol = 1)
+      Xmat[[p]] = Xmat[[p]] / max(Xmat[[p]])
     }
     Llist = as.list(Lp)
     names(Llist) = paste("L", 1:P, sep = "")
@@ -161,6 +164,7 @@ WWmodel = function(modeldata, ID, date, value, covariate = NULL, iteration, burn
     XImat[[l]] = matrix(0, nrow = 2 * I * T, ncol = I)
     for (i in 1:I) XImat[[l]][((2 * i - 2) * T + 1):((2 * i) * T), i] = rep(PHI[l, ], 2)
     XImat[[l]] = XImat[[l]][-missing, ]
+    if (I == 1) XImat[[l]] = matrix(XImat[[l]], ncol = 1)
   }
   names(XImat) = paste("XI", 1:L0, sep = "")
 
