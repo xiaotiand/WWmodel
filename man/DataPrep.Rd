@@ -4,12 +4,17 @@
 \alias{DataPrep}
 \title{The data preparation function}
 \usage{
-DataPrep(RawData, model_target)
+DataPrep(RawData, model_target, lab = "all", city = "all")
 }
 \arguments{
 \item{RawData}{The raw data for preprocessing}
 
 \item{model_target}{The target virus concentration (N1 or N2)}
+
+\item{lab}{A list of lab sites. The default is "all". The final results will be the intersection of labs and cities selected.}
+
+\item{city}{A list of cities (Edmonton, Halifax, Montreal, Toronto, and Vancouver). The default is "all".
+The final results will be the intersection of labs and cities selected.}
 }
 \value{
 The data frame/table for the main function
@@ -20,4 +25,5 @@ This function is used to prepare a data frame/table for the main function.
 \examples{
 rawdata = as.data.table(readRDS("ww-db-2021-09-10.rds"))
 modeldata = DataPrep(rawdata, "N1")
+modeldata = DataPrep(rawdata, "N1", city = c("Toronto", "Edmonton"))
 }
