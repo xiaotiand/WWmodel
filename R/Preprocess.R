@@ -5,12 +5,16 @@
 #' This function is used to prepare a data frame/table for the main function.
 #' @param RawData The raw data for preprocessing
 #' @param model_target The target virus concentration (N1 or N2)
+#' @param lab A list of lab sites. The default is "all". The final results will be the intersection of labs and cities selected.
+#' @param city A list of cities (Edmonton, Halifax, Montreal, Toronto, and Vancouver). The default is "all".
+#' The final results will be the intersection of labs and cities selected.
 #' @return The data frame/table for the main function
 #' @examples
 #' rawdata = as.data.table(readRDS("ww-db-2021-09-10.rds"))
 #' modeldata = DataPrep(rawdata, "N1")
+#' modeldata = DataPrep(rawdata, "N1", city = c("Toronto", "Edmonton"))
 
-DataPrep = function(RawData, model_target) {
+DataPrep = function(RawData, model_target, lab = "all", city = "all") {
   data = RawData
   data$date = as.Date(data$date)
   data = data[labname == "NML", ]
@@ -43,6 +47,18 @@ DataPrep = function(RawData, model_target) {
 
   modeldata = modeldata[order(date)]
   modeldata = modeldata[target %in% model_target, ]
+  if (lab != "all") {
+    modeldata = modeldata[Location %in% lab, ]
+  }
+  if (city != "all") {
+    sites = c()
+    if ("Edmonton" %in% city) sites = c(sites, "EGB")
+    if ("Halifax" %in% city) sites = c(sites, "HDA", "HHA", "HMC")
+    if ("Montreal" %in% city) sites = c(sites, "MMN", "MMS")
+    if ("Toronto" %in% city) sites = c(sites, "TAB", "THC", "THU", "TNT")
+    if ("Vancouver" %in% city) sites = c(sites, "VAI", "VII", "VLG", "VLI", "VNL")
+    modeldata = modeldata[Location %in% sites, ]
+  }
   return(modeldata)
 }
 
