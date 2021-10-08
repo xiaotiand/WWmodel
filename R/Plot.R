@@ -1,7 +1,7 @@
 ##### Plot/diagnostic Functions
 
 
-plot_fitted_trend <- function(modeldata, model_res) {
+plot_fitted_trend <- function(modeldata, model_res, ID, date) {
 
   # --- reshape input data
   Ymat = reshape(modeldata[, names(modeldata) %in% c(ID, date, value), with = FALSE],
@@ -57,14 +57,13 @@ plot_fitted_trend <- function(modeldata, model_res) {
                 fill = col.fit, color = col.fit, size=0.2)+
     geom_line(aes(y=m), size = 1,  color  = col.fit) +
     geom_point(aes(y = value.obs), alpha = 0.5, shape = 16) +
-    facet_wrap(~Location, scales = 'free_y', ncol = 1) +
+    facet_wrap(~Location, scales = 'free_y', ncol = 2) +
     theme(panel.grid.minor = element_blank())+
     labs(
       title = 'Fitted trends',
       x='', y='log concentration'
     )
-  g
-
+  return(g)
 }
 
 

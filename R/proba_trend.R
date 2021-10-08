@@ -21,9 +21,12 @@ proba_trend <- function(modeldata,
                         model_res,
                         lag,
                         trend_direction,
+                        ID, date,
                         dataframe.format = FALSE) {
-  Ymat = reshape(modeldata[, names(modeldata) %in% c(ID, date, value),
-                           with = FALSE],
+
+  y = modeldata[, names(modeldata) %in% c(ID, date, value),
+                with = FALSE]
+  Ymat = reshape(data = y,
                  idvar = ID, timevar = date, direction = "wide")
   Ymat = Ymat[order(Location, replicate)]
   IDdt = Ymat[, names(Ymat) %in% ID, with = FALSE]
