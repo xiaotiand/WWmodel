@@ -39,7 +39,8 @@ DataPrep = function(RawData, model_target, lab = "all", city = "all") {
   modeldata = merge(modeldata,
                     data[method == "solids",
                          c("Location", "date", "target", "replicate",
-                           "dinflvol", "infltemp", "ph", "temp", "rain_t", "rain_y")],
+                           "dinflvol", "infltemp", "ph", "temp",
+                           "tss", "rain_t", "rain_y")],
                     by = c("Location", "target", "replicate", "date"),
                     all =  FALSE, all.x = TRUE, all.y = FALSE)
   modeldata = unique(modeldata)
