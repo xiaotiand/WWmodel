@@ -5,6 +5,18 @@ calcProba = function(xt, xt1, trend_direction) {
   return(length(which(s*temp > 0)) / length(temp))
 }
 
+#' @title Categorize probability levels.
+#' @param p Vector of probabilities.
+proba_categ <- function(p) {
+  res = rep(NA, length(p))
+  res[p < 0.4] <- 'very low'
+  res[p >= 0.4 & p <0.6] <- 'low'
+  res[p >= 0.6 & p <0.8] <- 'medium'
+  res[p >= 0.8] <- 'strong'
+  return(res)
+}
+
+
 #' Calculate the probability of a trend
 #'
 #' @param modeldata The long-format data frame/table of virus concentration
@@ -22,7 +34,7 @@ proba_trend <- function(modeldata,
                         lag,
                         trend_direction,
                         ID, date,
-                        dataframe.format = FALSE) {
+                        dataframe.format = TRUE) {
 
   y = modeldata[, names(modeldata) %in% c(ID, date, value),
                 with = FALSE]
@@ -59,7 +71,12 @@ proba_trend <- function(modeldata,
     df = as.data.frame(iprob)
     names(df) = loc.name
     df$date = stamps[-(1:lag)]
-    res = df
+    res = df %>%
+      pivot_longer(-date, names_to = 'wwloc', values_to = 'proba')%>%
+      mutate(ctg = proba_categ(proba))
+
+    res$ctg <- factor(x = res$ctg,
+                      levels = c('very low', 'low', 'medium', 'strong'))
   }
 
   return(res)
