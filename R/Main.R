@@ -100,7 +100,14 @@ createStanModel = function(L0, P, Lp = NULL) {
 #' model_res = WWmodel(modeldata, ID, date, value, covariate, 5000, 2500)
 #' model_res$fit
 
-WWmodel = function(modeldata, ID, date, value, covariate = NULL, iteration, burnin) {
+WWmodel = function(modeldata,
+                   ID,
+                   date,
+                   value,
+                   covariate = NULL,
+                   iteration,
+                   burnin,
+                   cores = 1) {
   Ymat = reshape(modeldata[, names(modeldata) %in% c(ID, date, value), with = FALSE],
                  idvar = ID, timevar = date, direction = "wide")
   Ymat = Ymat[order(Location, replicate)]
@@ -177,7 +184,12 @@ WWmodel = function(modeldata, ID, date, value, covariate = NULL, iteration, burn
              Llist, Xmat, XImat, list(Y = Y))
     regression_model = stan_model(model_code = createStanModel(L0, P, Lp))
   }
-  fit = rstan::sampling(regression_model, data = data, chains = 2, iter = iteration, refresh = 0)
+  fit = rstan::sampling(regression_model,
+                        data = data,
+                        chains = 2,
+                        iter = iteration,
+                        cores = cores,
+                        refresh = 100)
   list_of_draws = extract(fit)
 
   after = iteration - burnin + 1
