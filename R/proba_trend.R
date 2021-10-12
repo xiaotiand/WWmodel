@@ -33,7 +33,7 @@ proba_trend <- function(modeldata,
                         model_res,
                         lag,
                         trend_direction,
-                        ID, date,
+                        ID, date, value,
                         dataframe.format = TRUE) {
 
   y = modeldata[, names(modeldata) %in% c(ID, date, value),
