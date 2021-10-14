@@ -1,7 +1,7 @@
 Package: WWmodel
 Type: Package
 Title: Wastewater Model Tools
-Version: 0.1.0
+Version: 0.1.2
 Author: Xiaotian Dai
 Maintainer: Xiaotian Dai <xdai@ucalgary.ca>
 Description: An R Package for Wastewater Model Tools

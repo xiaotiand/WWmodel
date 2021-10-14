@@ -9,7 +9,10 @@ proba_trend(
   model_res,
   lag,
   trend_direction,
-  dataframe.format = FALSE
+  ID,
+  date,
+  value,
+  dataframe.format = TRUE
 )
 }
 \arguments{

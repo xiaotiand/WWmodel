@@ -4,7 +4,16 @@
 \alias{WWmodel}
 \title{Main WWmodel function}
 \usage{
-WWmodel(modeldata, ID, date, value, covariate = NULL, iteration, burnin)
+WWmodel(
+  modeldata,
+  ID,
+  date,
+  value,
+  covariate = NULL,
+  iteration,
+  burnin,
+  cores = 1
+)
 }
 \arguments{
 \item{modeldata}{The long-format data frame/table of virus concentration}
