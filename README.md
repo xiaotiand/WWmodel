@@ -24,5 +24,7 @@ or
 
 for an example of making forecastes based on a fitted WWmodel.
 
-Citations: To be added
 
+Citations:
+
+Dai, X., Champredon, D., Fazil, A., Mangat, C.S., Peterson, S.W., Mejia, E., Lu, X., & Chekouo, T. (2022). Statistical framework to support the epidemiological interpretation of SARS-CoV-2 concentration in municipal wastewater. Scientific Reports, 12(1): 1-10.
